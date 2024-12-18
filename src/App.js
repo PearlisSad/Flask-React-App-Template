@@ -1,25 +1,22 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import { BrowserRouter, Routes, Route} from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import Navbar from './component/Navbar';
+import ToDoList from './page/ToDoList';
+
+function App() {{/**/}
+    return (
+        <div>
+          <Navbar /> 
+          <BrowserRouter>
+            <Routes>
+              <Route index element = {<ToDoList />} />
+              <Route path='/todolist' element ={<ToDoList />} />
+              </Routes>
+          </BrowserRouter>
+        </div>
+      );
 }
 
 export default App;

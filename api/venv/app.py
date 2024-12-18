@@ -1,22 +1,38 @@
-# Importing flask module in the project is mandatory
-# An object of Flask class is our WSGI application.
-from flask import Flask
+from flask import Flask, jsonify, request
+from flask_cors import CORS
 
-# Flask constructor takes the name of 
-# current module (__name__) as argument.
 app = Flask(__name__)
+CORS(app)  # Allows cross-origin requests from React
 
-# The route() function of the Flask class is a decorator, 
-# which tells the application which URL should call 
-# the associated function.
-@app.route('/')
-# ‘/’ URL is bound with hello_world() function.
-def hello_world():
-    return 'Hello World'
+tasks = []
 
-# main driver function
+@app.route('/tasks', methods=['GET'])
+def get_tasks():
+    return jsonify(tasks)
+
+@app.route('/tasks', methods=['POST'])
+def add_task():
+    data = request.json
+    tasks.append({'id': len(tasks) + 1, 'text': data['text'], 'completed': False})
+    return jsonify({'message': 'Task added successfully'})
+
+@app.route('/tasks', methods=['POST'])
+def add_task():
+    try:
+        data = request.json
+        if not data or 'text' not in data:
+            return jsonify({'error': 'Task text is required'}), 400
+        tasks.append({'id': len(tasks) + 1, 'text': data['text'], 'completed': False})
+        return jsonify({'message': 'Task added successfully'}), 201
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/tasks/<int:task_id>', methods=['DELETE'])
+def delete_task(task_id):
+    global tasks
+    tasks = [task for task in tasks if task['id'] != task_id]
+    return jsonify({'message': 'Task deleted successfully'})
+
 if __name__ == '__main__':
-
-    # run() method of Flask class runs the application 
-    # on the local development server.
-    app.run()
+    app.run(debug=True)
